@@ -10,13 +10,13 @@ const adminSchema = new Schema({
         type : String,
         required : [true,"Email Is Required...!"]
     },
-    class : {
-        type : String,
-        required : [true,"Class Is Required...!"]
-    },
     admin:{
         type:Boolean,
         default : true
+    },
+    password:{
+        type:String,
+        required:[true,"Password Is Required....!"]
     }
 })
 

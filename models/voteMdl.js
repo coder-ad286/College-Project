@@ -7,7 +7,7 @@ const voteSchema = new Schema({
         type : String,
         required : [true,"Name Is Required...!"]
     },
-    noinees:[
+    nominees:[
         {
             name : {
                 type : String,
@@ -25,9 +25,10 @@ const voteSchema = new Schema({
     ],
     result:{
         type : String,
-        default : null
+        default : 0
     }
 })
 
 
 const Vote = model("vote",voteSchema)
+export default Vote
