@@ -4,7 +4,7 @@ import asyncError from "../utils/asyncError.js";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import sendResponse from "../utils/sendResponse.js";
 import sendToken from "../utils/sendToken.js";
-import { checkEmpty } from "../utils/valiadate.js";
+import { checkEmpty } from "../utils/validate.js";
 
 export const createAdmin = asyncError(async(req,res,next)=>{
     const {password} = req.body;

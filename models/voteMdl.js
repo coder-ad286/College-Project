@@ -1,34 +1,45 @@
-import { Schema,model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 
 
 const voteSchema = new Schema({
-    name : {
-        type : String,
-        required : [true,"Name Is Required...!"]
+    name: {
+        type: String,
+        required: [true, "Name Is Required...!"]
     },
-    nominees:[
+    nominees: [
         {
-            name : {
-                type : String,
-                required : [true,"Nominees Is Required...!"]
+            name: {
+                type: String,
+                required: [true, "Nominees Is Required...!"]
             },
-            email : {
-                type : String,
-                required : [true,"Email Is Required...!"]
+            email: {
+                type: String,
+                required: [true, "Email Is Required...!"]
+            },
+            regno: {
+                type: String,
+                required: [true, "RegNo Is Required...!"]
             },
             votes:{
-                type:Number,
+                type : Number,
                 default : 0
             }
         }
     ],
-    result:{
-        type : String,
-        default : 0
+    voters:[
+        {
+            regno : {
+                type : String,
+            }
+        }
+    ],
+    result: {
+        type: String,
+        default: 0
     }
 })
 
 
-const Vote = model("vote",voteSchema)
+const Vote = model("vote", voteSchema)
 export default Vote

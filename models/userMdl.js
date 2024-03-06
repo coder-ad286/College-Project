@@ -21,6 +21,14 @@ const userSchema = new Schema({
     class : {
         type : String,
         required : [true,"Class Is Required...!"]
+    },
+    otp:{
+        num : {
+            type : String
+        },
+        expiresTime : {
+            type : Date
+        }
     }
 })
 

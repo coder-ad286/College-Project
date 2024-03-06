@@ -6,7 +6,7 @@ import { connectDatabase } from "./config/db.js";
 import adminRouter from "./routes/adminRoute.js";
 import error from "./middlewares/error.js";
 // import seedData from "./utils/seeder.js";
-
+import cookiParser from 'cookie-parser'
 
 dotenv.config()
 const app = express()
@@ -15,12 +15,15 @@ const app = express()
 const PORT = process.env.PORT
 connectDatabase()
 app.use(express.json())
+app.use(cookiParser())
 
 //ROUTES
 app.use("/api/v1/user/",userRouter)
 app.use("/api/v1/vote/",voteRouter)
 app.use("/api/v1/admin/",adminRouter)
 
+//SEED DATA
+// seedData()
 
 app.use(error)
 
