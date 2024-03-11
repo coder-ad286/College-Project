@@ -86,6 +86,7 @@ export const enterOTP = asyncError(async (req, res, next) => {
     const poll = (await Vote.find({}))[0] //FIND CURRENT POLL
     // FIND NOMINEE FROM GIVEN "nomineeRegNo"
     const nominee = poll.nominees.find(nominee => nominee.regno === nomineeRegNo)
+    if (!nominee) return next(new ErrorHandler("Nominee Doesn't Exists....!", 400))
     // CHECK VOTERS ALREADY EXISTS OR NOT
     const { voters } = poll
     const voter = voters.find(voter => voter.regno === regno)
