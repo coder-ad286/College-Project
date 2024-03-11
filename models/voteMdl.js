@@ -36,7 +36,7 @@ const voteSchema = new Schema({
     ],
     result: {
         type: String,
-        default: 0
+        default: ""
     }
 })
 

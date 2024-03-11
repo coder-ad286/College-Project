@@ -63,7 +63,7 @@ export const makeVote = asyncError(async (req, res, next) => {
     const otpNum = generateOTP();
     const expiryTime = getExpiryTime()
     try {
-        await sendOTP(user.email,otpNum)
+        await sendOTP(user.email, otpNum)
     }
     catch (error) {
         return next(new ErrorHandler(error.message, 400))
@@ -73,6 +73,43 @@ export const makeVote = asyncError(async (req, res, next) => {
             num: otpNum,
             expiresTime: expiryTime
         }
-    })
+    }, { new: true })
     return sendResponse(res, 201, "Otp Generated Successfully...!", otpGeneratedUser)
 })
+
+export const enterOTP = asyncError(async (req, res, next) => {
+    const { otp, regno, nomineeRegNo } = req.body;
+    //CHECK ALL NOT EMPTY
+    if (checkEmpty([otp, regno, nomineeRegNo])) return next(new ErrorHandler("OTP and RegNo is Required...!", 400))
+    const user = await User.findOne({ regno }) // FIND USER WITH "regno"
+    if (!user) return next(new ErrorHandler("User Doesn't Exists....!", 400))
+    const poll = (await Vote.find({}))[0] //FIND CURRENT POLL
+    // FIND NOMINEE FROM GIVEN "nomineeRegNo"
+    const nominee = poll.nominees.find(nominee => nominee.regno === nomineeRegNo)
+    // CHECK VOTERS ALREADY EXISTS OR NOT
+    const { voters } = poll
+    const voter = voters.find(voter => voter.regno === regno)
+    if (voter) return next(new ErrorHandler("Your Vote Is Already Exists...!"))
+    if (user.otp.num != otp) return next(new ErrorHandler("Invalid OTP...!", 400)) // CHECK OTP IS  EQUAL OR NOT
+    // CHECK OTP EXPIRES TIME
+    const otpExpiresTime = user.otp.expiresTime.getTime()
+    const nowTime = new Date().getTime()
+    if (!(nowTime <= otpExpiresTime)) return next(new ErrorHandler("Invalid OTP...!", 400))
+    // INCREASE VOTES COUNT IN NOMINEE ARRAY 
+    await Vote.updateOne(
+        {
+            _id: poll._id,
+            "nominees._id": nominee._id
+        },
+        {
+            $inc: { "nominees.$.votes": 1 }
+        }
+    );
+    // ADD VOTER TO VOTERS ARRAY
+    const updatedVote = await Vote.updateOne(
+        { _id: poll._id },
+        { $push: { voters: { regno: regno } } },
+    );
+    return sendResponse(res, 400, "Your Vote Is Sucessfully Registered...!", null)
+})
+
